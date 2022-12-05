@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  gitea_primary_name_available:
+    container_name: gitea_primary_name_available
+    image: gitea/gitea
+    ports:
+      - "3000:3000"
+    environment:
+      - GITEA__security__INSTALL_LOCK=true
+      - GITEA__server__ROOT_URL=https://host.docker.internal:4000
+      - GITEA__log__LEVEL=Trace
+
+  gitea_primary_name_unavailable:
+    container_name: gitea_primary_name_unavailable
+    image: gitea/gitea
+    ports:
+      - "3001:3000"
+    environment:
+      - GITEA__security__INSTALL_LOCK=true    
+      - GITEA__server__ROOT_URL=https://host.docker.internal:4001
+      - GITEA__log__LEVEL=Trace
+
+  nginx:
+    container_name: nginx
+    image: nginx
+    ports:
+      - "4000:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf  
+      - ./domain.key:/certs/domain.key
+      - ./domain.crt:/certs/domain.crt
